@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: top;
+            height: auto;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #ff6600;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #b30000;
+        }
+
+        #cajadatos {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .resultado {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>NICOLAX LUCIANO | 100589315</h1>
+        <h1>Validacion de Cedula</h1>
+        <label for="cedula">Ingrese la cedula sin guiones:</label>
+        <input type="text" id="cedula" maxlength="11">
+        <button id="validar">Validar Cédula</button>
+        <div id="cajadatos"></div>
+    </div>
+
+    <script>
+        function iniciar() {
+            var boton = document.getElementById('validar');
+            boton.addEventListener('click', validarCedula, false);
+        }
+
+        function validarCedula() {
+            var cedula = document.getElementById('cedula').value.trim();
+            if (cedula.length !== 11 || !/^\d+$/.test(cedula)) {
+                alert("La cedula debe tener 11 digitos.");
+                return;
+            }
+
+            var esValida = validarModulo10(cedula);
+            var resultado = esValida ? "Cedula correcta" : "Cedula incorrecta";
+            sessionStorage.setItem(cedula, resultado);
+            mostrarResultados();
+        }
+
+        function validarModulo10(cedula) {
+            var suma = 0;
+            for (var i = 0; i < cedula.length; i++) {
+                var digito = parseInt(cedula.charAt(i));
+                var multiplicador = (i % 2 === 0) ? 1 : 2;
+                var producto = digito * multiplicador;
+                suma += (producto > 9) ? producto - 9 : producto;
+            }
+
+            return suma % 10 === 0;
+        }
+
+        function mostrarResultados() {
+            var cajadatos = document.getElementById('cajadatos');
+            cajadatos.innerHTML = ''; 
+
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var clave = sessionStorage.key(i);
+                var valor = sessionStorage.getItem(clave);
+                cajadatos.innerHTML += `<div class="resultado">${clave} - ${valor}</div>`;
+            }
+        }
+        window.addEventListener('load', iniciar, false);
+    </script>
+</body>
+</html>
